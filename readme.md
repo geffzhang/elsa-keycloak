@@ -1,7 +1,5 @@
 Simple sample to demo keycloak integration into Elsa V3 server and studio (blazor server)
 
-![alt](chrome_sj0kfgIftr.gif)
-
 There are some known issues
 - studio blazor (server mode): get access_token from HttpContext
    ```c#

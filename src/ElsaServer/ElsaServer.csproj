@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Keycloak.AuthServices.Authentication" Version="1.5.2" />
+		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.7" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+		<PackageReference Include="Elsa" Version="3.0.6" />
+		<PackageReference Include="Elsa.Common" Version="3.0.6" />
+		<PackageReference Include="Elsa.Http" Version="3.0.6" />
+		<PackageReference Include="Elsa.Workflows.Api" Version="3.0.6" />
+		<PackageReference Include="Elsa.EntityFrameworkCore.Sqlite" Version="3.0.6" />
+		<PackageReference Include="Elsa.EntityFrameworkCore" Version="3.0.6" />
+		<PackageReference Include="Elsa.Workflows.Runtime" Version="3.0.6" />
+	</ItemGroup>
+
+</Project>

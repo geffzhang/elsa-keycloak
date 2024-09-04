@@ -12,7 +12,7 @@ namespace ElsaStudioServer
         [Inject]
         protected IHttpContextAccessor? Context { get; set; }
 
-        protected override void OnInitialized()
+        protected override async Task OnInitializedAsync()
         {
             if (Context?.HttpContext?.User.Identity?.IsAuthenticated != true)
             {

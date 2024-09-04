@@ -1,11 +1,14 @@
+using Elsa.EntityFrameworkCore.Extensions;
+using Elsa.EntityFrameworkCore.Modules.Management;
+using Elsa.EntityFrameworkCore.PostgreSql;
+using Elsa.EntityFrameworkCore.Modules.Runtime;
 using Elsa.Extensions;
 using FastEndpoints.Swagger;
 using Keycloak.AuthServices.Authentication;
+using Keycloak.AuthServices.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-
-using Elsa.EntityFrameworkCore.Modules.Management;
-using Elsa.EntityFrameworkCore.Modules.Runtime;
-using Elsa.EntityFrameworkCore.Extensions;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.IdentityModel.Tokens;
 
 namespace ElsaServer
 {
@@ -29,33 +32,67 @@ namespace ElsaServer
             builder.Services.AddControllers();
             builder.Services.AddElsa(elsa =>
             {
-                elsa.UseWorkflowManagement(management => management.UseEntityFrameworkCore(ef => ef.UseSqlite()));
-
+                elsa.UseWorkflowManagement(management => 
+                        management.UseEntityFrameworkCore(ef => 
+                               ef.UsePostgreSql(builder.Configuration.GetConnectionString("elsadb")!))
+                        );
                 elsa.UseWorkflowRuntime(runtime =>
                 {
-                    runtime.UseEntityFrameworkCore(ef => ef.UseSqlite());
+                    runtime.UseEntityFrameworkCore(ef =>
+                               ef.UsePostgreSql(builder.Configuration.GetConnectionString("elsadb")!));
                 });
                 elsa.UseJavaScript();
-                elsa.UseLiquid(); 
-                //elsa.UseWorkflowRuntime(runtime => runtime.AddWorkflow<HelloWorldHttpWorkflow>());
+                elsa.UseLiquid();
                 elsa.UseHttp();
                 elsa.UseWorkflowsApi();
+
+                // Use timers.
+                elsa.UseQuartz();
+                elsa.UseScheduling(scheduling => scheduling.UseQuartzScheduler());
+
             });
 
-            builder.Services.AddKeycloakAuthentication(builder.Configuration, options =>
-            {
-                options.RequireHttpsMetadata = false;
-                options.Events = new JwtBearerEvents
+            var keycloakSection = builder.Configuration.GetSection("Keycloak");
+            builder.Services.AddOptions<KeycloakAuthenticationOptions>("keycloak");
+
+            KeycloakAuthenticationOptions keycloakOptions = new();
+            keycloakSection.Bind(keycloakOptions, opt => opt.BindNonPublicProperties = true);
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(opts =>
                 {
-                    OnTokenValidated = context =>
+                    const string roleClaimType = "role";
+                    var validationParameters = new TokenValidationParameters
                     {
-                        //var appContext = context.Request.HttpContext.RequestServices.GetService<AppContext>();
-                        //appContext.OnTokenValidated(context);
-                        ////todo: add code to check
-                        return Task.CompletedTask;
-                    }
-                };
-            });
+                        ClockSkew = keycloakOptions.TokenClockSkew,
+                        ValidateAudience = keycloakOptions.VerifyTokenAudience ?? true,
+                        ValidateIssuer = false,
+                        NameClaimType = "preferred_username",
+                        RoleClaimType = roleClaimType,
+                    };
+
+            var sslRequired = string.IsNullOrWhiteSpace(keycloakOptions.SslRequired)
+                || keycloakOptions.SslRequired
+                    .Equals("external", StringComparison.OrdinalIgnoreCase);
+
+            opts.Authority = keycloakOptions.KeycloakUrlRealm;
+            opts.Audience = keycloakOptions.Resource;
+            opts.TokenValidationParameters = validationParameters;
+            opts.RequireHttpsMetadata = sslRequired;
+            opts.SaveToken = true;
+        });
+            KeycloakAuthorizationOptions options = new();
+            keycloakSection.Bind(options, opt => opt.BindNonPublicProperties = true);
+            // Authorization
+            builder.Services.AddAuthorization(options =>
+            {
+                options.DefaultPolicy = new AuthorizationPolicyBuilder()
+                       .RequireAuthenticatedUser()
+                       .Build();
+
+            })
+            .AddKeycloakAuthorization()
+            .AddAuthorizationServer(builder.Configuration);
+
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             //builder.Services.AddEndpointsApiExplorer();
@@ -67,7 +104,7 @@ namespace ElsaServer
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
-                
+
                 //Microsoft.AspNetCore.Builder.SwaggerBuilderExtensions.UseSwagger(app);
                 //app.UseSwaggerUI();
             }

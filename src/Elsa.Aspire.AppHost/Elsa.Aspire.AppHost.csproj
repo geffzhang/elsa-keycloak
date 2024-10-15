@@ -8,9 +8,9 @@
     <UserSecretsId>cb656fcd-ff36-42fc-8ccf-4b6f805559ae</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="8.2.0" />
-    <PackageReference Include="Aspire.Hosting.RabbitMQ" Version="8.2.0" />
-    <PackageReference Include="Aspire.Hosting.AppHost" Version="8.2.0" />
+    <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="8.2.1" />
+    <PackageReference Include="Aspire.Hosting.RabbitMQ" Version="8.2.1" />
+    <PackageReference Include="Aspire.Hosting.AppHost" Version="8.2.1" />
 	<PackageReference Include="Aspire.Hosting.Keycloak" Version="8.2.0-preview.1.24428.5" />
   </ItemGroup>
   <ItemGroup>

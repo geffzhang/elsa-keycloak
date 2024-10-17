@@ -1,19 +1,19 @@
+using Blazored.LocalStorage;
+using Elsa.Studio.Contracts;
 using Elsa.Studio.Core.BlazorServer.Extensions;
 using Elsa.Studio.Dashboard.Extensions;
 using Elsa.Studio.Extensions;
-using Elsa.Studio.Login.BlazorServer.Extensions;
+using Elsa.Studio.Login.BlazorServer.Services;
+using Elsa.Studio.Login.Contracts;
 using Elsa.Studio.Login.HttpMessageHandlers;
+using Elsa.Studio.Login.Services;
+using Elsa.Studio.Models;
 using Elsa.Studio.Shell.Extensions;
 using Elsa.Studio.Webhooks.Extensions;
 using Elsa.Studio.WorkflowContexts.Extensions;
-using Elsa.Studio.Workflows.Extensions;
 using Elsa.Studio.Workflows.Designer.Extensions;
+using Elsa.Studio.Workflows.Extensions;
 using ElsaStudioServer;
-using Elsa.Studio.Login.Contracts;
-using Elsa.Studio.Login.Services;
-using Elsa.Studio.Contracts;
-using Elsa.Studio.Login.BlazorServer.Services;
-using Blazored.LocalStorage;
 
 // Build the host.
 var builder = WebApplication.CreateBuilder(args);
@@ -31,9 +31,14 @@ builder.Services.AddCore();
 builder.Services.AddShell(options => configuration.GetSection("Shell").Bind(options));
 builder.Services.AddKeycloak(builder.Configuration.GetSection("Oidc"));
 builder.Services.AddDataProtection();
-builder.Services.AddRemoteBackend(
-    elsaClient => elsaClient.AuthenticationHandler = typeof(AuthenticatingApiHttpMessageHandler),
-    options => configuration.GetSection("Backend").Bind(options));
+
+var backendApiConfig = new BackendApiConfig
+{
+    ConfigureBackendOptions = options => configuration.GetSection("Backend").Bind(options),
+    ConfigureHttpClientBuilder = options => options.AuthenticationHandler = typeof(AuthenticatingApiHttpMessageHandler),
+};
+
+builder.Services.AddRemoteBackend(backendApiConfig);
 builder.Services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<IUnauthorizedComponentProvider, ElsaStudioServer.LoginPageProvider>();
 builder.Services.AddScoped<IJwtAccessor, BlazorServerJwtAccessor>();
@@ -59,6 +64,7 @@ builder.Services.AddSignalR(options =>
     // Set MaximumReceiveMessageSize:
     options.MaximumReceiveMessageSize = 5 * 1024 * 1000; // 5MB
 });
+
 
 // Build the application.
 var app = builder.Build();

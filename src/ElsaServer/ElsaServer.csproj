@@ -7,18 +7,19 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Elsa.Quartz" Version="3.3.0-webhooks.1982" />
+		<PackageReference Include="Elsa.Quartz" Version="3.3.0-secrets.2061" />
 		<PackageReference Include="Keycloak.AuthServices.Authentication" Version="2.5.3" />
 		<PackageReference Include="Keycloak.AuthServices.Authorization" Version="2.5.3" />		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.10" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.9.0" />
-		<PackageReference Include="Elsa" Version="3.3.0-webhooks.1982" />
-		<PackageReference Include="Elsa.Common" Version="3.3.0-webhooks.1982" />
-		<PackageReference Include="Elsa.Http" Version="3.3.0-webhooks.1982" />
-		<PackageReference Include="Elsa.Workflows.Api" Version="3.3.0-webhooks.1982" />
-		<PackageReference Include="Elsa.EntityFrameworkCore.PostgreSql" Version="3.3.0-webhooks.1982" />
-		<PackageReference Include="Elsa.EntityFrameworkCore.Sqlite" Version="3.3.0-webhooks.1982" />
-		<PackageReference Include="Elsa.EntityFrameworkCore" Version="3.3.0-webhooks.1982" />
-		<PackageReference Include="Elsa.Workflows.Runtime" Version="3.3.0-webhooks.1982" />
+		<PackageReference Include="Elsa" Version="3.3.0-secrets.2061" />
+		<PackageReference Include="Elsa.Common" Version="3.3.0-secrets.2061" />
+		<PackageReference Include="Elsa.Http" Version="3.3.0-secrets.2061" />
+		<PackageReference Include="Elsa.Workflows.Api" Version="3.3.0-secrets.2061" />
+		<PackageReference Include="Elsa.EntityFrameworkCore.PostgreSql" Version="3.3.0-secrets.2061" />
+		<PackageReference Include="Elsa.EntityFrameworkCore.SqlServer" Version="3.3.0-secrets.2061" />
+		<PackageReference Include="Elsa.EntityFrameworkCore.Sqlite" Version="3.3.0-secrets.2061" />
+		<PackageReference Include="Elsa.EntityFrameworkCore" Version="3.3.0-secrets.2061" />
+		<PackageReference Include="Elsa.Workflows.Runtime" Version="3.3.0-secrets.2061" />
 	</ItemGroup>
 
 </Project>

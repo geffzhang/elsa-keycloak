@@ -1,6 +1,5 @@
 using Elsa.EntityFrameworkCore.Extensions;
 using Elsa.EntityFrameworkCore.Modules.Management;
-using Elsa.EntityFrameworkCore.PostgreSql;
 using Elsa.EntityFrameworkCore.Modules.Runtime;
 using Elsa.Extensions;
 using FastEndpoints.Swagger;
@@ -45,6 +44,7 @@ namespace ElsaServer
                 elsa.UseLiquid();
                 elsa.UseHttp();
                 elsa.UseWorkflowsApi();
+ 
 
                 // Use timers.
                 elsa.UseQuartz();

@@ -13,6 +13,10 @@ var postgresdb = builder.AddPostgres("pg")
     .WithDataVolume()
     .AddDatabase("elsadb");
 
+//var sqlserverdb = builder.AddSqlServer("sqlserver",adminPassword)
+//    .WithDataVolume()
+//    .AddDatabase("elsadb");
+
 var messaging = builder.AddRabbitMQ("messaging");
 
 var server = builder.AddProject<Projects.ElsaServer>("elsaserver")
